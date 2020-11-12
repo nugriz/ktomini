@@ -1,0 +1,64 @@
+<p>
+<strong>Judul Kontes:</strong>
+<%= @contest.title %>
+</p>
+
+<p>
+<strong>Deskripsi dan Aturan:</strong>
+<%= @contest.text %>
+</p>
+
+<p>
+<strong>Status:</strong>
+<%= @contest.status %>
+</p>
+
+<h2>Jawab dengan baik dan benar</h2>
+<table>
+  <tr>
+    <th>Soal</th>
+    <th>Jawaban</th>
+    <% if can? :create, @contest%>
+      <th>Kunci</th>
+    <% end %>
+    <th>Nilai</th>
+    <th colspan="3"></th>
+  </tr>
+<% @contest.questions.each do |question| %>
+    <tr>
+      <td><%= question.quest %></td>
+      <td><%= question.answer %></td>
+      <% if can? :create, @contest%>
+        <td><%= question.key %></td>
+      <% end %>
+      <td><%= question.score %></td>
+      <td><%= link_to 'Jawab', edit_contest_question_path(question) %></td>
+      <% if can? :create, @contest%>
+        <td><%= link_to 'Hapus', contest_question_path(question),
+                method: :delete,
+                data: { confirm: 'Are you sure?' } %></td>
+      <% end %>
+    </tr>
+<% end %>
+</table>
+<% if can? :create, @contest%>
+  <h2>Tambahkan soal:</h2>
+  <%= form_with(model: [ @contest, @contest.questions.build ], local: true) do |form| %>
+    <p>
+      <%= form.label :quest %><br>
+      <%= form.text_area :quest %>
+    </p>
+    <p>
+      <%= form.label :key %><br>
+      <%= form.text_field :key %>
+    </p>
+    <p>
+      <%= form.submit %>
+    </p>
+  <% end %>
+
+  <%= link_to 'Edit', edit_contest_path(@contest) %> |
+<% end %>
+
+
+<%= link_to 'Back', contests_path %>

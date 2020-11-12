@@ -1,0 +1,36 @@
+<%= form_with model: @contest, local: true do |form| %>
+ 
+    <% if @contest.errors.any? %>
+      <div id="error_explanation">
+        <h2>
+          <%= pluralize(@contest.errors.count, "error") %> prohibited
+          this contest from being saved:
+        </h2>
+        <ul>
+          <% @contest.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+   
+    <p>Judul Kontes (
+      <%= form.label :title %> )<br>
+      <%= form.text_field :title %>
+    </p>
+   
+    <p>Deskripsi dan Aturan (
+      <%= form.label :text %> )<br>
+      <%= form.text_area :text %>
+    </p>
+   
+    <p>Status (
+      <%= form.label :status %> )<br>
+      <%= form.text_area :status %>
+    </p>
+
+    <p>
+      <%= form.submit %>
+    </p>
+   
+  <% end %>

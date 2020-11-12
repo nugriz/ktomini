@@ -1,0 +1,23 @@
+<%= form_with(model: @question, url: [@contest, @question], local: true) do |form| %>
+    <% if can? :create, @contest%>
+    <p>
+      <%= form.label :quest %><br>
+      <%= form.text_area :quest %>
+    </p>
+    <p>
+      <%= form.label :key %><br>
+      <%= form.text_field :key %>
+    </p>
+    <% end %>
+    <p>
+      <%= form.label :answer %><br>
+      <%= form.text_field :answer %>
+    </p>
+    <p>
+      <%= form.submit "jawab" %>
+    </p>
+  <% end %>
+
+  <%= link_to 'back', contest_path(@contest),
+              method: :get,
+              data: { confirm: 'Are you sure?' } %>
