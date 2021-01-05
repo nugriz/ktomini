@@ -16,7 +16,7 @@ RSpec.describe Contest, :type => :model do
       subject.title = nil
       expect(subject).to_not be_valid
     end
-    
+    #test leaderboard
     it "is create leaderboard descendently" do
       contest = Contest.create(title: "Anything",
                                 text: "Lorem ipsum",
