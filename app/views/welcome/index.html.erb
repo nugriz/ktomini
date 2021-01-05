@@ -1,4 +1,6 @@
 <h1>Welcome to KTOM!</h1>
 <%= link_to 'KTOM Contest', controller: 'contests' %>
-<%= link_to 'register', form_register_path %>
-<%= link_to 'login', form_login_path %>
+<% if current_user.blank? %>
+    <%= link_to 'register', form_register_path %>
+    <%= link_to 'login', form_login_path %>
+<% end %>

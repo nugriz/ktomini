@@ -1,15 +1,17 @@
+<p>Hallo!
+<%= current_user.username %>
+</p>
 <h1>Listing Contests</h1>
 
 <% if can? :create, @contest%>
   <%= link_to 'New Contest', new_contest_path %>
 <% end %>
  
-<p>hello</p>
 <table>
   <tr>
     <th>Judul Kontes</th>
     <th>Deskripsi dan Aturan</th>
-    <th>Status</th>
+    <th>Berakhir</th>
     <th></th>
   </tr>
  
@@ -17,7 +19,7 @@
     <tr>
       <td><%= contest.title %></td>
       <td><%= contest.text %></td>
-      <td><%= contest.status %></td>
+      <td><%= contest.is_ended? %></td>
       <td><%= link_to 'Show', contest_path(contest) %></td>
       <% if can? :create, @contest%>
         <td><%= link_to 'Edit', edit_contest_path(contest) %></td>

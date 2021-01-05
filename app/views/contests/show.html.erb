@@ -1,46 +1,94 @@
+<p>Hallo!
+<%= current_user.username %>
+</p>
+<p>
+</p>
+<% if @contest.is_ended == true %>
+  <table>
+  <th>Urutan</th>
+  <th>Nama</th>
+  <th>Nilai</th>
+  <% @leaderboard_contest.each do |i| %>
+    <tr><td><%= @leaderboard_contest.index(i) + 1 %></td>
+    <td><%= User.find(i[0]).username %></td>
+    <td><%= i[1] %></tr>
+  <% end %>
+  </table>
+<% end %>
 <p>
 <strong>Judul Kontes:</strong>
 <%= @contest.title %>
 </p>
-
 <p>
 <strong>Deskripsi dan Aturan:</strong>
 <%= @contest.text %>
 </p>
-
-<p>
-<strong>Status:</strong>
-<%= @contest.status %>
-</p>
-
-<h2>Jawab dengan baik dan benar</h2>
-<table>
-  <tr>
-    <th>Soal</th>
-    <th>Jawaban</th>
-    <% if can? :create, @contest%>
-      <th>Kunci</th>
-    <% end %>
-    <th>Nilai</th>
-    <th colspan="3"></th>
-  </tr>
-<% @contest.questions.each do |question| %>
+<% if @contest.is_ended == false %>
+  <table>
     <tr>
-      <td><%= question.quest %></td>
-      <td><%= question.answer %></td>
+      <th>Soal</th>
       <% if can? :create, @contest%>
-        <td><%= question.key %></td>
+        <th>Kunci</th>
       <% end %>
-      <td><%= question.score %></td>
-      <td><%= link_to 'Jawab', edit_contest_question_path(question) %></td>
-      <% if can? :create, @contest%>
-        <td><%= link_to 'Hapus', contest_question_path(question),
-                method: :delete,
-                data: { confirm: 'Are you sure?' } %></td>
-      <% end %>
+      <th>Jawaban</th>
+      <th colspan="3"></th>
     </tr>
+  <% @contest.questions.each do |question| %>
+      <tr> 
+      <td><%= question.quest %></td>
+      <% if can? :create, @contest%>
+        <td>
+          <table>
+          <% question.keys.each do |key| %>
+            <tr>
+              <td><%= key.key %></td>
+              <td><td><%= link_to 'Hapus', question_key_path(question, key),
+              method: :delete,
+              data: { confirm: 'Are you sure?' } %></td>
+            </tr>
+          <% end %>
+            
+          </table>
+        </td>
+        <% end %>
+
+        <% if can? :create, @contest%>
+        <td><%= link_to 'atur kunci jawaban / edit soal', edit_contest_question_path(question.contest_id, question) %></td>
+        <% end %>
+
+        <% if can? :create, @contest%>
+          <td><%= link_to 'Hapus', contest_question_path(question.contest_id, question),
+                  method: :delete,
+                  data: { confirm: 'Are you sure?' } %></td>
+        <% end %>
+        
+
+        <td>
+        <% if Answer.where(:question => question.id).where(:user => current_user.id).empty? %> 
+          <%= form_for([@contest.questions.find(question.id), @contest.questions.find(question.id).answers.build]) do |form| %>
+            <p>
+              <%= form.label :answer %><br>
+              <%= form.text_area :answer %>
+            </p>
+            <p>
+              <%= form.submit %>
+            </p>
+          <% end %>
+          
+          <% end %>
+        <% if Answer.where(:question => question.id).where(:user => current_user.id).present? %>
+          <p><%= Answer.where(:question => question.id).where(:user => current_user.id)[0].answer %>
+          </p>
+          <%= link_to 'Ganti Jawaban', question_answer_path(question),
+          method: :delete,
+          data: { confirm: 'Are you sure?' } %>
+        <% end %>
+        
+        </td>
+      </tr>
+  <% end %>
+  </table>
 <% end %>
-</table>
 <% if can? :create, @contest%>
   <h2>Tambahkan soal:</h2>
   <%= form_with(model: [ @contest, @contest.questions.build ], local: true) do |form| %>
@@ -49,16 +97,10 @@
       <%= form.text_area :quest %>
     </p>
     <p>
-      <%= form.label :key %><br>
-      <%= form.text_field :key %>
-    </p>
-    <p>
       <%= form.submit %>
     </p>
   <% end %>
 
   <%= link_to 'Edit', edit_contest_path(@contest) %> |
 <% end %>
-
-
 <%= link_to 'Back', contests_path %>

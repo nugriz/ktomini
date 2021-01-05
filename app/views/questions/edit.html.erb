@@ -4,19 +4,21 @@
       <%= form.label :quest %><br>
       <%= form.text_area :quest %>
     </p>
-    <p>
-      <%= form.label :key %><br>
-      <%= form.text_field :key %>
-    </p>
     <% end %>
     <p>
-      <%= form.label :answer %><br>
-      <%= form.text_field :answer %>
+      <%= form.submit "update soal" %>
     </p>
-    <p>
-      <%= form.submit "jawab" %>
-    </p>
-  <% end %>
+<% end %>
+
+<%= form_with(model: [ @question, @question.keys.build ], local: true) do |form| %>
+  <p>
+    <%= form.label :key %><br>
+    <%= form.text_area :key %>
+  </p>
+  <p>
+    <%= form.submit %>
+  </p>
+<% end %>
 
   <%= link_to 'back', contest_path(@contest),
               method: :get,

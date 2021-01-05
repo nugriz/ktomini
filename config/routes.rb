@@ -5,6 +5,14 @@ Rails.application.routes.draw do
     resources :questions
   end
 
+  resources :questions do
+    resources :keys
+  end
+
+  resources :questions do
+    resources :answers
+  end
+
   root 'welcome#index'
 
   # register
@@ -17,4 +25,7 @@ Rails.application.routes.draw do
 
   # logout
   delete '/logout/:id', to: 'auth#logout', as: 'user_logout'
+
+  #answer
+  post 'answers/', to: 'answers#create'
 end

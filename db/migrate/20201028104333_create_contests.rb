@@ -3,7 +3,7 @@ class CreateContests < ActiveRecord::Migration[6.0]
     create_table :contests do |t|
       t.string :title
       t.text :text
-      t.string :status
+      t.boolean :is_ended
 
       t.timestamps
     end

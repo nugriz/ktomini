@@ -5,40 +5,48 @@ class QuestionsController < ApplicationController
     
     def create
         @contest = Contest.find(params[:contest_id])
-        @question = @contest.questions.create(question_params)
+        if can? :create, @contest
+          @question = @contest.questions.create(question_params)
+        end
         redirect_to contest_path(@contest)
     end
 
     def edit
-        @contest = Contest.find(params[:id])
-        @question = @contest.questions.find(params[:contest_id])
+        @contest = Contest.find(params[:contest_id])
+        if can? :create, @contest
+          @question = @contest.questions.find(params[:id])
+        else
+          redirect_to contest_path(@contest)
+        end
     end
 
     def update
         @contest = Contest.find(params[:contest_id])
-        @question = @contest.questions.find(params[:id])
-     
-        if @question.update(question_params)
-          if @question.answer == @question.key
-            @question.update(score:1)
+        if can? :create, @contest
+          @question = @contest.questions.find(params[:id])
+      
+          if @question.update(question_params)
+            redirect_to @contest
           else
-            @question.update(score:0)
+            render 'edit'
           end
-          redirect_to @contest
         else
-          render 'edit'
+          redirect_to contest_path(@contest)
         end
     end
     
     def destroy
-        @contest = Contest.find(params[:id])
-        @question = @contest.questions.find(params[:contest_id])
-        @question.destroy
-        redirect_to contest_path(@contest)
+        @contest = Contest.find(params[:contest_id])
+        if can? :create, @contest
+          @question = @contest.questions.find(params[:id])
+          @question.destroy
+        else
+          redirect_to contest_path(@contest)
+        end
     end
 
     private
         def question_params
-          params.require(:question).permit(:quest, :answer, :key, :score)
+          params.require(:question).permit(:quest)
         end
 end
